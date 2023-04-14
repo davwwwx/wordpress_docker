@@ -199,39 +199,7 @@ sub vcl_recv {
     # interact with the site (either common user logins or even commenting), e.g. make a menu item
     # to point to a user login page (e.g. /login), including all related functionality such as
     # password reset, email reminder and so on.
-    if(
-        req.url ~ "^/addons" ||
-        req.url ~ "^/administrator" ||
-        req.url ~ "^/warenkorb" ||
-        req.url ~ "^/kasse" ||
-        req.url ~ "^/shop" ||
-        req.url ~ "^/component/banners" ||
-        req.url ~ "^/component/socialconnect" ||
-        req.url ~ "^/component/users" ||
-        req.url ~ "^/connect" ||
-        req.url ~ "^/kontakt" ||
-        req.url ~ "^/login" ||
-        req.url ~ "^/logout" ||
-        req.url ~ "^/kunden-logout" ||
-        req.url ~ "^/lost-password" ||
-        req.url ~ "^/" ||
-        req.url ~ "^/register" ||
-        req.url ~ "^/signin" ||
-        req.url ~ "^/signup" ||
-        req.url ~ "^/wc-api" ||
-        req.url ~ "^/wp-admin" ||
-        req.url ~ "^/wp-cron.php" ||
-        req.url ~ "^/wp-login.php" ||
-        req.url ~ "^/wp-json/wc-analytics/admin/notes" ||
-        req.url ~ "^\?add-to-cart=" ||
-        req.url ~ "^\?wc-api="
-    ) {
-        #set req.http.Cache-Control = "private, max-age=0, no-cache, no-store";
-        #set req.http.Expires = "Mon, 01 Jan 2001 00:00:00 GMT";
-        #set req.http.Pragma = "no-cache";
-        return (pass);
-    }
-
+    
     # Don't cache ajax requests
     if(req.http.X-Requested-With == "XMLHttpRequest" || req.url ~ "nocache") {
         #set req.http.Cache-Control = "private, max-age=0, no-cache, no-store";
@@ -280,15 +248,7 @@ sub vcl_backend_response {
     }
 */
 
-    # Don't cache 50x responses
-    if (
-        beresp.status == 500 ||
-        beresp.status == 502 ||
-        beresp.status == 503 ||
-        beresp.status == 504
-    ) {
-        return (abandon);
-    }
+  
 
     # === DO NOT CACHE ===
     # Exclude the following paths (e.g. backend admins, user pages or ad URLs that require tracking)
@@ -296,39 +256,7 @@ sub vcl_backend_response {
     # interact with the site (either common user logins or even commenting), e.g. make a menu item
     # to point to a user login page (e.g. /login), including all related functionality such as
     # password reset, email reminder and so on.
-    if(
-        bereq.url ~ "^/addons" ||
-        bereq.url ~ "^/administrator" ||
-        bereq.url ~ "^/warenkorb" ||
-        bereq.url ~ "^/kasse" ||
-        bereq.url ~ "^/shop" ||
-        bereq.url ~ "^/" ||
-        bereq.url ~ "^/component/banners" ||
-        bereq.url ~ "^/component/socialconnect" ||
-        bereq.url ~ "^/component/users" ||
-        bereq.url ~ "^/connect" ||
-        bereq.url ~ "^/contact" ||
-        bereq.url ~ "^/login" ||
-        bereq.url ~ "^/logout" ||
-        bereq.url ~ "^/lost-password" ||
-        bereq.url ~ "^/mein-konto" ||
-        bereq.url ~ "^/register" ||
-        bereq.url ~ "^/signin" ||
-        bereq.url ~ "^/signup" ||
-        bereq.url ~ "^/wc-api" ||
-        bereq.url ~ "^/wp-admin" ||
-        bereq.url ~ "^/wp-cron.php" ||
-        bereq.url ~ "^/wp-login.php" ||
-        bereq.url ~ "^/wp-json/wc-analytics/admin/notes" ||
-        bereq.url ~ "^\?add-to-cart=" ||
-        bereq.url ~ "^\?wc-api="
-    ) {
-        #set beresp.http.Cache-Control = "private, max-age=0, no-cache, no-store";
-        #set beresp.http.Expires = "Mon, 01 Jan 2001 00:00:00 GMT";
-        #set beresp.http.Pragma = "no-cache";
-        set beresp.uncacheable = true;
-        return (deliver);
-    }
+  
 
     # Don't cache HTTP authorization/authentication pages and pages with certain headers or cookies
     if (
